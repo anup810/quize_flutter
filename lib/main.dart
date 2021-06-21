@@ -9,8 +9,11 @@ class Quize extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.grey[900],
-        body: SafeArea(
-          child: QuizePage(),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: SafeArea(
+            child: QuizePage(),
+          ),
         ),
       ),
     );
@@ -23,6 +26,14 @@ class QuizePage extends StatefulWidget {
 }
 
 class _QuizePageState extends State<QuizePage> {
+  List<Icon> scoreKeeper = [];
+  List<String> questions = [
+    'You can lead a cow down stairs but not up stairs.',
+    'Approximately one quarter of human bones are in the feet.',
+    'A slug\'s blood is green.',
+  ];
+  int questionNumber = 0;
+  List<bool> answer = [false, true, true];
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,7 +46,7 @@ class _QuizePageState extends State<QuizePage> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where question will go.',
+                questions[questionNumber],
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -59,7 +70,15 @@ class _QuizePageState extends State<QuizePage> {
                 ),
               ),
               onPressed: () {
-                //True Pressed by User
+                bool correctAnswer = answer[questionNumber];
+                if (correctAnswer == true) {
+                  print('User got it right');
+                } else {
+                  print('User got it wrong');
+                }
+                setState(() {
+                  questionNumber++;
+                });
               },
             ),
           ),
@@ -79,10 +98,21 @@ class _QuizePageState extends State<QuizePage> {
                 backgroundColor: Colors.red,
               ),
               onPressed: () {
-                //False Pressed by user.
+                bool correctAnswer = answer[questionNumber];
+                if (correctAnswer == false) {
+                  print('User got it right');
+                } else {
+                  print('User got it wrong');
+                }
+                setState(() {
+                  questionNumber++;
+                });
               },
             ),
           ),
+        ),
+        Row(
+          children: scoreKeeper,
         ),
       ],
     );
