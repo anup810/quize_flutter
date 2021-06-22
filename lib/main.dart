@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'quize_brain.dart';
+
+QuizeBrain quizeBrain = QuizeBrain();
 
 void main() => runApp(Quize());
 
@@ -27,13 +30,38 @@ class QuizePage extends StatefulWidget {
 
 class _QuizePageState extends State<QuizePage> {
   List<Icon> scoreKeeper = [];
-  List<String> questions = [
-    'You can lead a cow down stairs but not up stairs.',
-    'Approximately one quarter of human bones are in the feet.',
-    'A slug\'s blood is green.',
-  ];
-  int questionNumber = 0;
-  List<bool> answer = [false, true, true];
+
+  void checkAnswer(bool userPickedAnswer) {
+    setState(() {
+      bool correctAnswer = quizeBrain.getAnswer();
+      if (correctAnswer == userPickedAnswer) {
+        scoreKeeper.add(
+          Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+        );
+        //print('User got it right');
+      } else {
+        scoreKeeper.add(
+          Icon(
+            Icons.close,
+            color: Colors.red,
+          ),
+        );
+        //print('User got it wrong');
+      }
+      quizeBrain.nextQuestion();
+    });
+  }
+  // List<String> questions = [
+  //   'You can lead a cow down stairs but not up stairs.',
+  //   'Approximately one quarter of human bones are in the feet.',
+  //   'A slug\'s blood is green.',
+  // ];
+  // Question q1 = Question(q: 'You can lead a cow down stairs but not up stairs.', a: false );
+
+  // List<bool> answer = [false, true, true];
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,7 +74,7 @@ class _QuizePageState extends State<QuizePage> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionNumber],
+                quizeBrain.getQuestion(),
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -70,15 +98,7 @@ class _QuizePageState extends State<QuizePage> {
                 ),
               ),
               onPressed: () {
-                bool correctAnswer = answer[questionNumber];
-                if (correctAnswer == true) {
-                  print('User got it right');
-                } else {
-                  print('User got it wrong');
-                }
-                setState(() {
-                  questionNumber++;
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -98,15 +118,7 @@ class _QuizePageState extends State<QuizePage> {
                 backgroundColor: Colors.red,
               ),
               onPressed: () {
-                bool correctAnswer = answer[questionNumber];
-                if (correctAnswer == false) {
-                  print('User got it right');
-                } else {
-                  print('User got it wrong');
-                }
-                setState(() {
-                  questionNumber++;
-                });
+                checkAnswer(false);
               },
             ),
           ),
