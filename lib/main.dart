@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'quize_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizeBrain quizeBrain = QuizeBrain();
 
@@ -32,27 +33,46 @@ class _QuizePageState extends State<QuizePage> {
   List<Icon> scoreKeeper = [];
 
   void checkAnswer(bool userPickedAnswer) {
-    setState(() {
-      bool correctAnswer = quizeBrain.getAnswer();
-      if (correctAnswer == userPickedAnswer) {
-        scoreKeeper.add(
-          Icon(
-            Icons.check,
-            color: Colors.green,
-          ),
-        );
-        //print('User got it right');
-      } else {
-        scoreKeeper.add(
-          Icon(
-            Icons.close,
-            color: Colors.red,
-          ),
-        );
-        //print('User got it wrong');
-      }
-      quizeBrain.nextQuestion();
-    });
+    bool correctAnswer = quizeBrain.getAnswer();
+    setState(
+      () {
+        //IF/ELSE to check if we've reached the end of the quiz.
+        if (quizeBrain.isFinished() == true) {
+          //show an alert using rFlutter_alert,
+          //Modified for our purposes:
+          Alert(
+            context: context,
+            title: 'Finished!',
+            desc: 'You\'ve reached the end of the quiz.',
+          ).show();
+
+          // reset the questionNumber,
+          quizeBrain.reset();
+
+          // empty out the scoreKeeper.
+          scoreKeeper = [];
+        } else {
+          if (correctAnswer == userPickedAnswer) {
+            scoreKeeper.add(
+              Icon(
+                Icons.check,
+                color: Colors.green,
+              ),
+            );
+            //print('User got it right');
+          } else {
+            scoreKeeper.add(
+              Icon(
+                Icons.close,
+                color: Colors.red,
+              ),
+            );
+            //print('User got it wrong');
+          }
+          quizeBrain.nextQuestion();
+        }
+      },
+    );
   }
   // List<String> questions = [
   //   'You can lead a cow down stairs but not up stairs.',
